@@ -16,10 +16,20 @@ server:
 	go build -ldflags "-X main.version=${version}" ./cmd/ck-server
 	mv ck-server* ./build
 
+client-dynlib: 
+	mkdir -p build
+	go build -ldflags "-X main.version=${version}" -buildmode=c-shared -o libck-client.so ./cmd/ck-client 
+	mv libck-client* ./build
+
+server-dynlib: 
+	mkdir -p build
+	go build -ldflags "-X main.version=${version}" -buildmode=c-shared -o libck-server.so ./cmd/ck-server 
+	mv libck-server* ./build
+
 install:
 	mv build/ck-* /usr/local/bin
 
-all: client server
+all: client server client-dynlib server-dynlib
 
 clean:
 	rm -rf ./build/ck-*

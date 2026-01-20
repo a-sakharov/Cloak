@@ -9,6 +9,8 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"C"
+	"unsafe"
 
 	"github.com/cbeuw/Cloak/internal/common"
 	"github.com/cbeuw/Cloak/internal/server"
@@ -66,6 +68,19 @@ func parseSSBindAddr(ssRemoteHost string, ssRemotePort string, ckBindAddr *[]net
 		*ckBindAddr = append(*ckBindAddr, ssBindAddr)
 	}
 	return nil
+}
+
+//export external_main
+func external_main(argc C.int, argv **C.char) {
+        var offset = unsafe.Sizeof(uintptr(0))
+        var go_argv []string
+        for i := 0; i < int(argc); i++ {
+                go_argv = append(go_argv, C.GoString(*argv))
+                argv = (**C.char)(unsafe.Pointer(uintptr(unsafe.Pointer(argv)) + offset))
+        }
+
+        os.Args = go_argv
+        main()
 }
 
 func main() {
