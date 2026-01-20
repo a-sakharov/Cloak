@@ -18,12 +18,12 @@ server:
 
 client-dynlib: 
 	mkdir -p build
-	go build -ldflags "-X main.version=${version}" -buildmode=c-shared -o libck-client.so ./cmd/ck-client 
+	go build -ldflags "-X main.version=${version}" -buildmode=c-shared -tags=external_main -o libck-client.so ./cmd/ck-client 
 	mv libck-client* ./build
 
 server-dynlib: 
 	mkdir -p build
-	go build -ldflags "-X main.version=${version}" -buildmode=c-shared -o libck-server.so ./cmd/ck-server 
+	go build -ldflags "-X main.version=${version}" -buildmode=c-shared -tags=external_main -o libck-server.so ./cmd/ck-server 
 	mv libck-server* ./build
 
 install:
